@@ -1,0 +1,17 @@
+[project]
+name = "dino-roar"
+version = "0.0.1"
+description = "Status update announcement bot for Dino Jump - Spark Design Club project"
+readme = "README.md"
+
+dependencies = [
+  'discord',
+  'python-dotenv',
+]
+
+[build-system]
+requires = [
+  "setuptools>=43.0.0",
+  "wheel"
+]
+build-backend = "setuptools.build_meta"
