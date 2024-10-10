@@ -8,10 +8,11 @@ and pass the data through an LLM for summarization.
 
 import os
 import re
-import discord
 from datetime import datetime
 from dotenv import load_dotenv
+from discord import Intents
 from discord.ext import commands
+from dino_roar import confluence
 
 # Load .env variables
 load_dotenv()
@@ -23,7 +24,7 @@ def main():
     First entry point for Dino Roar.
     """
     # Initialize bot
-    intents = discord.Intents.default()
+    intents = Intents.default()
     intents.message_content = True
     bot = commands.Bot(command_prefix="🦖 ", intents=intents)
 
@@ -36,6 +37,7 @@ def main():
         if date:
             date_obj = datetime.strptime(date.group(), "%m/%d/%Y")
             formatted_date = date_obj.strftime("%B %d, %Y")
+            confluence.fetch_content(date=date.group())
             await ctx.send(f"**Dino Jump Status Update - {formatted_date}**")
         else:
             await ctx.send("Invalid `[date]` readback - expecting format mm/dd/yyyy")
