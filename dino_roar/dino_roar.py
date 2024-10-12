@@ -19,6 +19,51 @@ load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
 
+def extract_info(data, indent=0):
+    """
+    Recursively extract info from a dictionary into a Dicord formatted bullet list.
+
+    Args:
+        data (dict): Dictionary to be formatted in Discord bullet list style.
+        indent (str): The level of indentation.
+
+    Returns:
+        str: Bullet list in Discord style.
+    """
+    bullet_list = ""
+    bullet = "  " * indent + "- "
+
+    for key, value in data.items():
+        bullet_list += bullet + key + "\n"
+        if isinstance(value, list):
+            for item in value:
+                if isinstance(item, dict):  # Check if item is a dictionary
+                    bullet_list += extract_info(item, indent + 1)  # Recursive call
+                else:
+                    bullet_list += extract_info({item: None}, indent + 1)
+        elif isinstance(value, dict):
+            bullet_list += extract_info(value, indent + 1)
+
+    return bullet_list
+
+
+def dict_to_discord_message(data_dict: dict, formatted_date: str):
+    """
+    Converts a dictionary to formatted Discord message.
+
+    Args:
+        dict (dict): Dictionary to be formatted in Discord bullet list style.
+        formatted_date (str): The date of the status update for message heading.
+
+    Returns:
+        str: Message to be sent via Discord bot.
+    """
+    heading = f"**Dino Jump Status Update - {formatted_date}**\n"
+    body = extract_info(data_dict)
+    print(f"{heading}{body}")
+    return f"{heading}{body}"
+
+
 def main():
     """
     First entry point for Dino Roar.
@@ -37,8 +82,8 @@ def main():
         if date:
             date_obj = datetime.strptime(date.group(), "%m/%d/%Y")
             formatted_date = date_obj.strftime("%B %d, %Y")
-            confluence.fetch_content(date=date.group())
-            await ctx.send(f"**Dino Jump Status Update - {formatted_date}**")
+            update_dict = confluence.fetch_content(date=date.group())
+            await ctx.send(dict_to_discord_message(update_dict, formatted_date))
         else:
             await ctx.send("Invalid `[date]` readback - expecting format mm/dd/yyyy")
 
