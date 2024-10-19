@@ -8,6 +8,10 @@ dependencies = [
   'discord',
   'python-dotenv',
   'requests',
+  'bs4',
+  'google-generativeai==0.8.2',
+  'grpcio-status==1.67.0',
+  'protobuf>=5.26.1,<6.0dev',
 ]
 
 [build-system]
@@ -16,3 +20,4 @@ requires = [
   "wheel"
 ]
 build-backend = "setuptools.build_meta"
+python_requires = ">=3.9"
