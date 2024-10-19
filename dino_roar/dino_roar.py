@@ -12,7 +12,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 from discord import Intents
 from discord.ext import commands
-from dino_roar import confluence
+from dino_roar import confluence, gemini
 
 # Load .env variables
 load_dotenv()
@@ -59,7 +59,8 @@ def dict_to_discord_message(data_dict: dict, formatted_date: str):
         str: Message to be sent via Discord bot.
     """
     heading = f"**Dino Jump Status Update - {formatted_date}**\n"
-    body = extract_info(data_dict)
+    prompt = extract_info(data_dict)
+    body = gemini.gemini_summarize(prompt)
     print(f"{heading}{body}")
     return f"{heading}{body}"
 
